@@ -25,7 +25,7 @@ For more information, please refer to the wiki page [here](https://github.com/ju
 
 ## Authors
 
-Justin Perdok ([@justin-p](https://github.com/justin-p/))
+Justin Perdok ([@justin-p](https://github.com/justin-p/)), Orange Cyberdefense
 
 ## Contributing
 
