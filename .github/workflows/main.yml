@@ -1,0 +1,73 @@
+---
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore: 
+      - '.github/**'
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.editorconfig'
+      - './ansible/.ansible-lint'
+      - './ansible/.yamllint'
+  pull_request:
+    branches: [ main ]
+    paths-ignore: 
+      - '.github/**'
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.editorconfig'
+      - './ansible/.ansible-lint'
+      - './ansible/.yamllint'
+
+jobs:
+  ansible:
+    name: Run molecule tests.
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        distro:
+          - ubuntu2004
+
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule docker molecule-docker yamllint ansible-lint
+
+      - name: Run Molecule tests.
+        run: molecule test
+        working-directory: ./ansible
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+
+  terraform:
+    name: Run Terraform fmt, init and validate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "./terraform"
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+      
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+      
+      - name: Terraform init
+        run: terraform init
+      
+      - name: Terraform validate
+        run: terraform validate

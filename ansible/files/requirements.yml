@@ -1,0 +1,27 @@
+---
+- src: https://github.com/robertdebock/ansible-role-update_package_cache
+  name: robertdebock.update_package_cache
+  version: 2.1.0
+- src: https://github.com/robertdebock/ansible-role-core_dependencies
+  name: robertdebock.core_dependencies
+  version: 2.1.1
+- src: https://github.com/robertdebock/ansible-role-epel
+  name: robertdebock.epel
+  version: 3.1.2
+- src: https://github.com/robertdebock/ansible-role-bootstrap
+  name: robertdebock.bootstrap
+  version: 5.2.6
+- src: https://github.com/robertdebock/ansible-role-update
+  name: robertdebock.update
+  version: 3.1.1
+- src: https://github.com/robertdebock/ansible-role-firewall
+  name: robertdebock.firewall
+  version: 5.1.2
+- src: https://github.com/robertdebock/ansible-role-hostname
+  name: robertdebock.hostname
+  version: 3.1.2
+###
+# add additional roles you want to install here
+# - src:
+#   name:
+#   version:

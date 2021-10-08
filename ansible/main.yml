@@ -1,0 +1,55 @@
+---
+- ansible.builtin.import_playbook: playbooks/terraform/tfvars.yml
+  tags: ['never', 'tfvars']
+
+- ansible.builtin.import_playbook: playbooks/terraform/create.yml
+  tags: always
+  when: 
+    - "'tfvars' not in ansible_run_tags"  
+    - "'destroy' not in ansible_run_tags"
+    - "'roles' not in ansible_run_tags"
+  
+- ansible.builtin.import_playbook: playbooks/terraform/destroy.yml
+  tags: ['never', 'destroy']
+
+- ansible.builtin.import_playbook: playbooks/ansible_galaxy/main.yml
+  tags: ['never', 'create', 'roles']
+
+- hosts: all
+  vars_files:
+    - "{{ playbook_dir }}/defaults/main.yml"
+    - "{{ playbook_dir }}/defaults/template_info.yml"
+
+  vars:
+    ansible_user: "{{ root_username }}"
+    ansible_ssh_private_key_file: "{{ root_private_key_path }}"
+  
+  tasks:
+    - name: Bootstrap host with bare bones config
+      ansible.builtin.import_tasks: tasks/bootstrap/main.yml
+      tags: ['never', 'create', 'bootstrap']
+
+## add your plays/tasks here
+- hosts: all:or_use_a_group_name
+  vars_files:
+    - "{{ playbook_dir }}/defaults/main.yml"
+    - "{{ playbook_dir }}/defaults/template_info.yml"
+  vars:
+    ansible_user: "{{ root_username }}"
+    ansible_ssh_private_key_file: "{{ root_private_key_path }}"
+
+  tasks:
+    - name: Your tasks here
+      ansible.builtin.import_tasks: tasks/main.yml
+      tags: always
+      when: 
+        - "'tfvars' not in ansible_run_tags"
+        - "'destroy' not in ansible_run_tags"
+        - "'roles' not in ansible_run_tags"
+        - "'bootstrap' not in ansible_run_tags"
+        - "'print_inventory' not in ansible_run_tags"
+
+## 
+
+- ansible.builtin.import_playbook: playbooks/print_inventory/main.yml
+  tags: ['never', 'create', 'print_inventory']

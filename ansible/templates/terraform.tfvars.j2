@@ -1,0 +1,86 @@
+project_name = "{{ project_name }}"
+root_ssh_key_path = "{{ root_private_key_path }}"
+
+{% if tokens['digitalocean'] is defined %}digitalocean_token = "{{ tokens['digitalocean'] }}"
+{% endif %}
+{% if host_list['digitalocean'][0]['name'] is defined %}digitalocean_enabled = true
+{% endif %}
+{% if host_list['digitalocean'][0]['name'] is not defined %}digitalocean_enabled = false
+{% endif %}
+digitalocean_servers = {
+{% if host_list['digitalocean'][0]['name'] is defined %} {% for dict_item in host_list['digitalocean'] %}
+  "{{dict_item['name']}}" = {
+{% if 'size' in dict_item %}    size = "{{dict_item['size']}}"
+{% endif %}
+{% if 'tags' in dict_item %}    tags = {{dict_item['tags']}}
+{% endif %}
+{% if 'image' in dict_item %}    image = "{{dict_item['image']}}"
+{% endif %}
+{% if 'hostname' in dict_item %}    hostname = "{{dict_item['hostname']}}"
+{% endif %}
+{% if 'region' in dict_item %}    region = "{{dict_item['region']}}"
+{% endif %}
+{% if 'backups' in dict_item %}    backups = {{dict_item['backups']}}
+{% endif %}
+{% if 'monitoring' in dict_item %}    monitoring = {{dict_item['monitoring']}}
+{% endif %}
+{% if 'ipv6' in dict_item %}    ipv6 = {{dict_item['ipv6']}}
+{% endif %}
+{% if 'resize_disk' in dict_item %}    resize_disk = {{dict_item['resize_disk']}}
+{% endif %}
+{% if 'droplet_agent' in dict_item %}    droplet_agent = {{dict_item['droplet_agent']}}
+{% endif %}
+{% if 'create_vpc' in dict_item %}    create_vpc = {{dict_item['create_vpc']}}
+{% endif %}
+{% if loop.nextitem is not defined %}
+  }
+{% endif %}
+{% if loop.nextitem is defined %}
+  },
+{% endif %}
+{% endfor %}{% endif %}
+{% if host_list['digitalocean'][0]['name'] is not defined %}
+  "you_should_never_use_this_host_name" = {
+    name = "you_should_never_use_this_host_name"
+    tags = ["ansible"]
+  }
+{% endif %}
+}
+
+{% if tokens['hetzner'] is defined %}hetzner_token = "{{ tokens['hetzner'] }}"
+{% endif %}
+{% if host_list['hetzner'][0]['name'] is defined %}hetzner_enabled = true
+{% endif %}
+{% if host_list['hetzner'][0]['name'] is not defined %}hetzner_enabled = false
+{% endif %}
+hetzner_servers = {
+{% if host_list['hetzner'][0]['name'] is defined %} {% for dict_item in host_list['hetzner'] %}
+  "{{dict_item['name']}}" = {
+{% if 'server_type' in dict_item %}    server_type = "{{dict_item['server_type']}}"
+{% endif %}
+{% if 'labels' in dict_item %}    labels = {{dict_item['labels']}}
+{% endif %}
+{% if 'image' in dict_item %}    image = "{{dict_item['image']}}"
+{% endif %}
+{% if 'hostname' in dict_item %}    hostname = "{{dict_item['hostname']}}"
+{% endif %}
+{% if 'location' in dict_item %}    location = "{{dict_item['location']}}"
+{% endif %}
+{% if 'backups' in dict_item %}    backups = "{{dict_item['backups']}}"
+{% endif %}
+{% if 'ptr' in dict_item %}    ptr = "{{dict_item['ptr']}}"
+{% endif %}
+{% if loop.nextitem is not defined %}
+  }
+{% endif %}
+{% if loop.nextitem is defined %}
+  },
+{% endif %}
+{% endfor %}{% endif %}  
+{% if host_list['hetzner'][0]['name'] is not defined %}
+  "you_should_never_use_this_host_name" = {
+    name = "you_should_never_use_this_host_name"
+    labels = {ansible = ""}
+  }
+{% endif %}
+}

@@ -1,0 +1,11 @@
+---
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: instance
+scenario:
+  name: default
+  test_sequence:
+    - lint

@@ -1,0 +1,37 @@
+---
+project_name: testing
+sshkey_folder: /home/justin-p/.ssh/
+## Example on how to define a host_list map to create multiple hosts and/or create hosts on multiple providers.
+## Tags/lables will be used as ansible groups so you can easily apply certain playbooks/roles against specific hosts.
+## This means that the host will be added ansible groups with the same name of the tags/label added below.
+## For all the options you can define per host look at the terraform.tfvars.j2 template.
+## For example you overwrite the size of the VM or the OS by adding it to this map.
+#
+# host_list: {
+#   digitalocean: [
+#     { "name": "host01",
+#       "tags": "[\"nginx\"]"
+#     },
+#     { "name": "host02",
+#       "tags": "[\"mysql\"]"
+#     },
+#   ],
+#   hetzner: [
+#     { "name": "host03",
+#       "labels": "{postfix = \"\"}"
+#     }
+#   ]
+# }
+#
+
+host_list: {
+  digitalocean: [
+    { "name": "host01",
+      "tags": "[\"ansible\"]"
+    },
+  ]
+}
+
+root_username: root
+root_private_key_path: "{{ sshkey_folder }}/{{ root_username }}-{{ project_name }}"
+root_public_key_path: "{{ sshkey_folder }}/{{ root_username }}-{{ project_name }}.pub"

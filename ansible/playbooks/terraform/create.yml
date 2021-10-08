@@ -1,0 +1,60 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - "{{ playbook_dir }}/../../defaults/template_info.yml"
+    - "{{ playbook_dir }}/../../defaults/secrets.yml"
+
+  pre_tasks:
+    - name: Ensure needed ssh keys are created
+      community.crypto.openssh_keypair:
+        path: "{{ sshkey_folder }}/{{ item }}-{{ project_name }}"
+      with_items:
+        - "{{ root_username }}"
+
+    - name: Ensure 'terraform.tfvars' template is deployed
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../../templates/terraform.tfvars.j2"
+        dest: "{{ playbook_dir }}/../../../terraform/terraform.tfvars"
+
+  tasks:
+    - name: Run terraform to create the infrastructure and populate our dynamic inventory
+      community.general.terraform:
+        project_path: "{{ playbook_dir }}/../../../terraform/"
+        variables_files: "{{ playbook_dir }}/../../../terraform/terraform.tfvars"
+        force_init: true
+      register: terraform_infra
+      when: host_list is defined
+
+    - name: Add each deployed digitalocean host to ansible inventory
+      ansible.builtin.add_host:
+        hostname: "{{ item.value['vm'][0]['name'] }}"
+        ansible_host: "{{ item.value['vm'][0]['ipv4_address'] }}"
+        groups: "{{ item.value['vm'][0]['tags'] }}"
+        cloudprovider: digitalocean
+        ipv4: "{{ item.value['vm'][0]['ipv4_address'] }}"
+        ipv6: "{{ item.value['vm'][0]['ipv6_address'] }}"
+        group: "{{ item.value['vm'][0]['tags'] }}"
+      changed_when: false
+      with_dict: "{{ terraform_infra.outputs['digitalocean_vms'].value }}"
+      when: terraform_infra.outputs['digitalocean_vms'].value['you_should_never_use_this_host_name']['vm'] is not defined
+
+    - name: Add each deployed hetzner host to ansible inventory
+      ansible.builtin.add_host:
+        hostname: "{{ item.value['vm'][0]['name'] }}"
+        ansible_host: "{{ item.value['vm'][0]['ipv4_address'] }}"
+        groups: "{{ item.value['vm'][0]['labels'].keys() }}"
+        cloudprovider: hetzner
+        ipv4: "{{ item.value['vm'][0]['ipv4_address'] }}"
+        ipv6: "{{ item.value['vm'][0]['ipv6_address'] }}"
+        group: "{{ item.value['vm'][0]['labels'].keys() }}"
+      changed_when: false
+      with_dict: "{{ terraform_infra.outputs['hetzner_vms'].value }}"
+      when: terraform_infra.outputs['hetzner_vms'].value['you_should_never_use_this_host_name']['vm'] is not defined
+
+  post_tasks:
+    - name: Remove 'terraform.tfvars' file
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../../../terraform/terraform.tfvars"
+        state: absent

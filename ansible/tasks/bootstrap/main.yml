@@ -1,0 +1,36 @@
+---
+- name: Run 'robertdebock.update_package_cache'-role
+  ansible.builtin.include_role:
+    name: robertdebock.update_package_cache
+
+- name: Run 'robertdebock.core_dependencies'-role
+  ansible.builtin.include_role:
+    name: robertdebock.core_dependencies
+
+- name: Run 'robertdebock.bootstrap'-role
+  ansible.builtin.include_role:
+    name: robertdebock.bootstrap
+
+- name: Run 'robertdebock.epel'-role
+  ansible.builtin.include_role:
+    name: robertdebock.epel
+
+- name: Run 'robertdebock.update'-role
+  ansible.builtin.include_role:
+    name: robertdebock.update
+  vars:
+    update_reboot: false # Using a custom reboot with `post_reboot_delay` seems to help avoid hetzner reboot issues (stuck waiting for reboot).
+
+- name: Run 'robertdebock.firewall'-role
+  ansible.builtin.include_role:
+    name: robertdebock.firewall
+  vars:
+    firewall_services:
+      - name: ssh
+
+- name: Reboot to apply role changes
+  ansible.builtin.reboot:
+    post_reboot_delay: 10
+
+- name: Flush handlers triggered turing bootstrap
+  ansible.builtin.meta: flush_handlers

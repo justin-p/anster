@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Print information about hosts in our current dynamic inventory
+      debug:
+        msg:
+          - "Host: {{ item }}"
+          - "IPv4: {{ hostvars[item]['ipv4'] }}"
+          - "IPv6: {{ hostvars[item]['ipv6'] }}"
+          - "Group: {{ hostvars[item]['group'] | join(' ') }}"
+          - "Cloud Provider: {{ hostvars[item]['cloudprovider'] }}"
+      loop: "{{ hostvars.keys() }}"

@@ -1,0 +1,24 @@
+project_name      = "testing"
+root_ssh_key_path = "/home/justin-p/.ssh//root-testing"
+
+digitalocean_token   = "abcdefghijklmnopqrstuvwqyzabcdefghijklmnopqrstuvwqyzabcdefghijqr"
+digitalocean_enabled = true
+digitalocean_servers = {
+  "host01" = {
+    tags = ["nginx"]
+    name = "host01"
+  },
+  "host02" = {
+    tags = ["mysql"]
+    name = "host02"
+  }
+}
+
+hetzner_token   = "abcdefghijklmnopqrstuvwqyzabcdefghijklmnopqrstuvwqyzabcdefghijqr"
+hetzner_enabled = true
+hetzner_servers = {
+  "host03" = {
+    labels = { postfix = "" }
+    name   = "host03"
+  }
+}

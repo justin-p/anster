@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get required roles with Ansible Galaxy
+      ansible.builtin.command: "ansible-galaxy install -r {{ playbook_dir }}/../../files/requirements.yml -p {{ playbook_dir }}/../../roles/"
+      delegate_to: localhost
+      changed_when: false
