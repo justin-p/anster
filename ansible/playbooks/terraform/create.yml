@@ -7,7 +7,7 @@
     - "{{ playbook_dir }}/../../defaults/secrets.yml"
 
   pre_tasks:
-    - name: Ensure needed ssh keys are created
+    - name: Ensure the needed ssh keys are created
       community.crypto.openssh_keypair:
         path: "{{ sshkey_folder }}/{{ item }}-{{ project_name }}"
       with_items:
