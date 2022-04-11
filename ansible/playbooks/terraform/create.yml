@@ -7,11 +7,35 @@
     - "{{ playbook_dir }}/../../defaults/secrets.yml"
 
   pre_tasks:
+    - name: Ensure .ssh directory exists
+      file: 
+        dest: "{{ sshkey_folder }}"
+        mode: 0700 
+        owner: "{{ lookup('env', 'USER') }}"
+        state: directory      
+
     - name: Ensure the needed ssh keys are created
       community.crypto.openssh_keypair:
         path: "{{ sshkey_folder }}/{{ item }}-{{ project_name }}"
       with_items:
         - "{{ root_username }}"
+      when: ssh_key is not defined
+        
+    - name: Using supplied SSH private key
+      copy: 
+        content: "{{ ssh_key.private.replace('\\n', '\n')  }}" 
+        dest: "{{ sshkey_folder }}/{{ root_username }}-{{ project_name }}"
+        mode: 0600
+        owner: "{{ lookup('env', 'USER') }}"
+      when: ssh_key is defined
+
+    - name: Using supplied SSH public key
+      copy: 
+        content: "{{ ssh_key.public }}" 
+        dest: "{{ sshkey_folder }}/{{ root_username }}-{{ project_name }}.pub"
+        mode: 0600
+        owner: "{{ lookup('env', 'USER') }}"
+      when: ssh_key is defined
 
     - name: Ensure 'terraform.tfvars' template is deployed
       ansible.builtin.template:
