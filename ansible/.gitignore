@@ -3,3 +3,4 @@ roles/*
 defaults/*.yml
 !defaults/*.example.yml
 !defaults/main.yml
+!defaults/template_info.yml
