@@ -6,7 +6,7 @@ terraform {
     }
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "~> 2.12.1"
+      version = "~> 2.19.0"
     }
     random = {
       source = "hashicorp/random"
