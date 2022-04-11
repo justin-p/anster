@@ -1,6 +1,6 @@
 ---
 - name: Your tasks here
-  debug:
+  ansible.builtin.debug:
     msg: 
       - "Guybrush: 'How can you see without eyeballs?'"
       - "Murray: 'How can you walk around without a brain?'"
