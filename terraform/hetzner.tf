@@ -12,11 +12,11 @@ variable "hetzner_servers" {
   description = "A map contaning server(s) that should be created."
   type = map(object({
     hostname    = optional(string)
-    server_type = optional(string)
+    server_type = optional(string, "cx11")
     labels      = map(string)
-    image       = optional(string)
-    location    = optional(string)
-    backups     = optional(bool)
+    image       = optional(string, "ubuntu-20.04")
+    location    = optional(string, "nbg1")
+    backups     = optional(bool, false)
     ptr         = optional(string)
   }))
   default = {
@@ -27,14 +27,6 @@ variable "hetzner_servers" {
 }
 
 locals {
-  # default values if incomplete server map is supplied
-  hetzner_servers = defaults(var.hetzner_servers, {
-    server_type = "cx11"
-    image       = "ubuntu-20.04"
-    location    = "nbg1"
-    backups     = false
-  })
-
   # if the hetzner modules are disabled, set hetzner_sshkey to a empty value
   # otherwise use the output of `module.hetzner_sshkey`.
   hetzner_ssh_key = (
@@ -55,7 +47,7 @@ module "hetzner_ssh_key" {
 module "hetzner_vm" {
   source         = "./hetzner/vm"
   module_enabled = var.hetzner_enabled
-  for_each       = local.hetzner_servers
+  for_each       = var.hetzner_servers
 
   root_username     = var.root_username
   root_ssh_key_path = var.root_ssh_key_path
