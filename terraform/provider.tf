@@ -12,8 +12,7 @@ terraform {
       source = "hashicorp/random"
     }
   }
-  required_version = ">= 1.0.8"
-  experiments      = [module_variable_optional_attrs]
+  required_version = ">= 1.3.7"
 }
 
 provider "hcloud" {
