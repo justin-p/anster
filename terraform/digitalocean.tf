@@ -24,7 +24,7 @@ variable "digitalocean_servers" {
     ipv6          = optional(bool, false)
     resize_disk   = optional(bool, true)
     droplet_agent = optional(bool, false)
-    create_vpc    = optional(bool, true) 
+    create_vpc    = optional(bool, true)
   }))
   default = {
     "host1" = {
