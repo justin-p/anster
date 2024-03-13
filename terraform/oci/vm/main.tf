@@ -1,17 +1,34 @@
-resource "random_pet" "main" {}
+resource "random_pet" "main" {
+  count = var.module_enabled ? 1 : 0 # only run if this variable is true
+
+  length = 2
+}
+
 
 resource "random_string" "main" {
+  count = var.module_enabled ? 1 : 0 # only run if this variable is true
+
   length  = 5
   special = false
+  upper   = false
 }
+
+locals {
+  # if module_enabled is true
+  # if server_hostname is null (which is the default value), generate a random hostname with random_pet and random_string
+  # else set it server_hostname to disabled
+  server_hostname = var.module_enabled == true ? (var.oci_instance_display_name != null ? var.oci_instance_display_name : "${random_pet.main[0].id}-${random_string.main[0].result}") : "disabled" # [0] selector is required due the `count = var.module_enabled` trick.
+
+}
+
 
 resource "oci_core_vcn" "main" {
   count = var.module_enabled ? 1 : 0 # only run if this variable is true
 
   cidr_block     = "10.0.0.0/16"
   compartment_id = var.oci_compartment_id
-  display_name   = "vcn_anster_${random_pet.main.id}"
-  dns_label      = "anster${random_string.main.id}"
+  display_name   = "vcn_${local.server_hostname}"
+  dns_label      = replace(substr("vcn${local.server_hostname}", 0, 14), "-", "") # hurrdurr dis name does not match our format fix. Remove '-' and ensure its not longer then 15 chars.
 }
 
 resource "oci_core_subnet" "main" {
@@ -19,8 +36,8 @@ resource "oci_core_subnet" "main" {
 
   cidr_block     = "10.0.0.0/24"
   compartment_id = var.oci_compartment_id
-  display_name   = "subnet_anster_${random_pet.main.id}"
-  dns_label      = "anster${random_string.main.id}"
+  display_name   = "subnet_${local.server_hostname}"
+  dns_label      = replace(substr("subnet${local.server_hostname}", 0, 14), "-", "") # hurrdurr dis name does not match our format fix. Remove '-' and ensure its not longer then 15 chars.
   route_table_id = oci_core_vcn.main[0].default_route_table_id
   vcn_id         = oci_core_vcn.main[0].id
 }
@@ -29,7 +46,7 @@ resource "oci_core_internet_gateway" "main" {
   count = var.module_enabled ? 1 : 0 # only run if this variable is true
 
   compartment_id = var.oci_compartment_id
-  display_name   = "Internet Gateway anster ${random_pet.main.id}"
+  display_name   = "Internet Gateway ${local.server_hostname}"
   enabled        = "true"
   vcn_id         = oci_core_vcn.main[0].id
 }
@@ -98,7 +115,7 @@ resource "oci_core_instance" "main" {
     assign_public_ip          = "true"
     subnet_id                 = oci_core_subnet.main[0].id
   }
-  display_name = "${var.oci_instance_display_name}_${random_pet.main.id}"
+  display_name = local.server_hostname
   instance_options {
     are_legacy_imds_endpoints_disabled = "false"
   }

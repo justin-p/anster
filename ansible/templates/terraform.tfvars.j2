@@ -77,7 +77,7 @@ hetzner_servers = {
 {% if loop.nextitem is defined %}
   },
 {% endif %}
-{% endfor %}{% endif %}  
+{% endfor %}{% endif %}
 {% if host_list['hetzner'][0]['name'] is not defined %}
   "you_should_never_use_this_host_name" = {
     name = "you_should_never_use_this_host_name"
@@ -112,7 +112,7 @@ oci_servers = {
 {% if loop.nextitem is defined %}
   },
 {% endif %}
-{% endfor %}{% endif %}  
+{% endfor %}{% endif %}
 
 {% if host_list['oci'][0]['name'] is not defined %}
   "you_should_never_use_this_host_name" = {

@@ -19,28 +19,15 @@ sshkey_folder: /home/justin-p/.ssh/
 #  hetzner: [
 #    { "name": "host03",
 #      "labels": "{postfix = \"\"}"
-#    },
-#    { "name": "host04",
-#      "labels": "{postfix = \"\"}"
-#    },
+#    }
 #  ],
 #  oci: [
-#    { "name": "host05",
-#      "freeform_tags": "{postfix = \"\"}"
-#    },
-#    { "name": "host06",
+#    { "name": "host04",
 #      "freeform_tags": "{postfix = \"\"}"
 #    },
 #  ]
 #}
 
-host_list: {
-  digitalocean: [
-    { "name": "host01",
-      "tags": "[\"ansible\"]"
-    },
-  ]
-}
 
 root_username: root
 root_private_key_path: "{{ sshkey_folder }}/{{ root_username }}-{{ project_name }}"
