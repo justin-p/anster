@@ -7,22 +7,26 @@ sshkey_folder: /home/justin-p/.ssh/
 ## For all the options you can define per host look at the terraform.tfvars.j2 template.
 ## For example you overwrite the size of the VM or the OS by adding it to this map.
 #
-# host_list: {
-#   digitalocean: [
-#     { "name": "host01",
-#       "tags": "[\"nginx\"]"
-#     },
-#     { "name": "host02",
-#       "tags": "[\"mysql\"]"
-#     },
-#   ],
-#   hetzner: [
-#     { "name": "host03",
-#       "labels": "{postfix = \"\"}"
-#     }
-#   ]
-# }
-#
+#host_list: {
+#  digitalocean: [
+#    { "name": "host01",
+#      "tags": "[\"nginx\"]"
+#    },
+#    { "name": "host02",
+#      "tags": "[\"mysql\"]"
+#    },
+#  ],
+#  hetzner: [
+#    { "name": "host03",
+#      "labels": "{postfix = \"\"}"
+#    }
+#  ],
+#  oci: [
+#    { "name": "host04",
+#      "freeform_tags": "{postfix = \"\"}"
+#    },
+#  ]
+#}
 
 host_list: {
   digitalocean: [

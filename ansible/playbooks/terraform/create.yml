@@ -77,6 +77,18 @@
       with_dict: "{{ terraform_infra.outputs['hetzner_vms'].value }}"
       when: terraform_infra.outputs['hetzner_vms'].value['you_should_never_use_this_host_name']['vm'] is not defined
 
+    - name: Add each deployed oci host to ansible inventory
+      ansible.builtin.add_host:
+        hostname: "{{ item.value['vm'][0]['display_name'] }}"
+        ansible_host: "{{ item.value['vm'][0]['public_ip'] }}"
+        groups: "{{ item.value['vm'][0]['freeform_tags'].keys() }}"
+        cloudprovider: oci
+        ipv4: "{{ item.value['vm'][0]['public_ip'] }}"
+        group: "{{ item.value['vm'][0]['freeform_tags'].keys() }}"
+      changed_when: false
+      with_dict: "{{ terraform_infra.outputs['oci_vms'].value }}"
+      when: terraform_infra.outputs['oci_vms'].value['you_should_never_use_this_host_name']['vm'] is not defined
+
   post_tasks:
     - name: Remove 'terraform.tfvars' file
       ansible.builtin.file:

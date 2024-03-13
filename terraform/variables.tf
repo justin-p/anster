@@ -7,7 +7,12 @@ variable "root_username" {
   default     = "root"
 }
 
-variable "root_ssh_key_path" {
+variable "root_ssh_private_key_path" {
   description = "The path of the ssh key for the root account"
   default     = "~/.ssh/temp_key"
+}
+
+variable "root_ssh_public_key_path" {
+  description = "The path of the public ssh key for the root account"
+  default     = "~/.ssh/temp_key.pub"
 }

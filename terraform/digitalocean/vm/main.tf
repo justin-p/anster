@@ -53,14 +53,14 @@ resource "digitalocean_droplet" "main" {
   vpc_uuid      = local.server_vpc
 }
 
-resource "null_resource" "is_server_ready_check" { # ensure that SSH is ready, accepting connections and that cloud-init has finished.
+resource "null_resource" "is_server_ready_check" { # ensure that SSH is ready, accepting connections, that cloud-init and apt-get has finished.
   count = var.module_enabled ? 1 : 0               # only run if this variable is true
 
   connection {
     type        = "ssh"
     user        = var.root_username
     host        = digitalocean_droplet.main[0].ipv4_address # [0] selector is required due the `count = var.module_enabled` trick.
-    private_key = file("${var.root_ssh_key_path}")
+    private_key = file("${var.root_ssh_private_key_path}")
   }
 
   provisioner "remote-exec" {
@@ -68,10 +68,10 @@ resource "null_resource" "is_server_ready_check" { # ensure that SSH is ready, a
   }
 
   provisioner "local-exec" {
-    command = "while ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${var.root_username}@${digitalocean_droplet.main[0].ipv4_address} -i ${var.root_ssh_key_path} 'ps aux | grep cloud-init | grep -v grep > /dev/null'; do echo 'Waiting for cloud-init to complete...'; sleep 10; done"
+    command = "while ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${var.root_username}@${digitalocean_droplet.main[0].ipv4_address} -i ${var.root_ssh_private_key_path} 'ps aux | grep cloud-init | grep -v grep > /dev/null'; do echo 'Waiting for cloud-init to complete...'; sleep 10; done"
   }
 
   provisioner "local-exec" {
-    command = "while ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${var.root_username}@${digitalocean_droplet.main[0].ipv4_address} -i ${var.root_ssh_key_path} 'ps aux | grep apt-get | grep -v grep > /dev/null'; do echo 'Waiting for apt-get to complete...'; sleep 10; done"
+    command = "while ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR ${var.root_username}@${digitalocean_droplet.main[0].ipv4_address} -i ${var.root_ssh_private_key_path} 'ps aux | grep apt-get | grep -v grep > /dev/null'; do echo 'Waiting for apt-get to complete...'; sleep 10; done"
   }
 }

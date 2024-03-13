@@ -1,5 +1,6 @@
 project_name = "{{ project_name }}"
-root_ssh_key_path = "{{ root_private_key_path }}"
+root_ssh_private_key_path = "{{ root_private_key_path }}"
+root_ssh_public_key_path = "{{ root_public_key_path }}"
 
 {% if tokens['digitalocean'] is defined %}digitalocean_token = "{{ tokens['digitalocean'] }}"
 {% endif %}
@@ -78,6 +79,42 @@ hetzner_servers = {
 {% endif %}
 {% endfor %}{% endif %}  
 {% if host_list['hetzner'][0]['name'] is not defined %}
+  "you_should_never_use_this_host_name" = {
+    name = "you_should_never_use_this_host_name"
+    labels = {ansible = ""}
+  }
+{% endif %}
+}
+
+{% if host_list['oci'][0]['name'] is defined %}oci_enabled = true
+{% endif %}
+{% if host_list['oci'][0]['name'] is not defined %}oci_enabled = false
+{% endif %}
+
+oci_servers = {
+{% if host_list['oci'][0]['name'] is defined %} {% for dict_item in host_list['oci'] %}
+  "{{dict_item['name']}}" = {
+{% if 'availability_domain' in dict_item %}    availability_domain = "{{dict_item['availability_domain']}}"
+{% endif %}
+{% if 'instance_display_name' in dict_item %}    instance_display_name = "{{dict_item['instance_display_name']}}"
+{% endif %}
+{% if 'shape' in dict_item %}    shape = "{{dict_item['shape']}}"
+{% endif %}
+{% if 'freeform_tags' in dict_item %}    freeform_tags = {{dict_item['freeform_tags']}}
+{% endif %}
+{% if 'source_id' in dict_item %}    source_id = "{{dict_item['source_id']}}"
+{% endif %}
+{% if 'source_type' in dict_item %}    source_type = "{{dict_item['source_type']}}"
+{% endif %}
+{% if loop.nextitem is not defined %}
+  }
+{% endif %}
+{% if loop.nextitem is defined %}
+  },
+{% endif %}
+{% endfor %}{% endif %}  
+
+{% if host_list['oci'][0]['name'] is not defined %}
   "you_should_never_use_this_host_name" = {
     name = "you_should_never_use_this_host_name"
     labels = {ansible = ""}

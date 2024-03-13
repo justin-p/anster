@@ -9,7 +9,7 @@ variable "project_name" {
 
 variable "project_description" {
   description = "Description of the new to the DigitalOcean Project"
-  default     = "Server deployed with Terraform and Ansible template"
+  default     = "Server deployed with Anster"
 }
 
 variable "digitalocean_droplets" {

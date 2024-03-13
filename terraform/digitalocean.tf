@@ -47,8 +47,8 @@ module "digitalocean_ssh_key" {
   source         = "./digitalocean/ssh_key"
   module_enabled = var.digitalocean_enabled
 
-  root_username     = var.root_username
-  root_ssh_key_path = var.root_ssh_key_path
+  root_username             = var.root_username
+  root_ssh_private_key_path = var.root_ssh_private_key_path
 }
 
 module "digitalocean_vm" {
@@ -56,8 +56,8 @@ module "digitalocean_vm" {
   module_enabled = var.digitalocean_enabled
   for_each       = var.digitalocean_servers
 
-  root_username     = var.root_username
-  root_ssh_key_path = var.root_ssh_key_path
+  root_username             = var.root_username
+  root_ssh_private_key_path = var.root_ssh_private_key_path
 
   server_hostname      = each.value.hostname
   server_tags          = each.value.tags

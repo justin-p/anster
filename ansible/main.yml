@@ -28,6 +28,7 @@
     - name: Bootstrap host with bare bones config
       ansible.builtin.import_tasks: tasks/bootstrap/main.yml
       tags: ['never', 'create', 'bootstrap']
+      become: true
 
 ## add your plays/tasks here
 - hosts: all:or_use_a_group_name

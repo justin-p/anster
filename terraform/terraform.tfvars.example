@@ -1,5 +1,5 @@
 project_name      = "testing"
-root_ssh_key_path = "/home/justin-p/.ssh//root-testing"
+root_ssh_private_key_path = "/home/justin-p/.ssh//root-testing"
 
 digitalocean_token   = "abcdefghijklmnopqrstuvwqyzabcdefghijklmnopqrstuvwqyzabcdefghijqr"
 digitalocean_enabled = true
@@ -20,5 +20,13 @@ hetzner_servers = {
   "host03" = {
     labels = { postfix = "" }
     name   = "host03"
+  }
+
+  oci_enabled = true
+  oci_servers = {
+    "host03" = {
+      labels = { postgres = "" }
+      name   = "host04"
+    }
   }
 }

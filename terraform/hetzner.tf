@@ -39,9 +39,9 @@ module "hetzner_ssh_key" {
   source         = "./hetzner/ssh_key"
   module_enabled = var.hetzner_enabled
 
-  project_name      = var.project_name
-  root_username     = var.root_username
-  root_ssh_key_path = var.root_ssh_key_path
+  project_name              = var.project_name
+  root_username             = var.root_username
+  root_ssh_private_key_path = var.root_ssh_private_key_path
 }
 
 module "hetzner_vm" {
@@ -49,8 +49,8 @@ module "hetzner_vm" {
   module_enabled = var.hetzner_enabled
   for_each       = var.hetzner_servers
 
-  root_username     = var.root_username
-  root_ssh_key_path = var.root_ssh_key_path
+  root_username             = var.root_username
+  root_ssh_private_key_path = var.root_ssh_private_key_path
 
   server_hostname    = each.value.hostname
   server_labels      = each.value.labels
