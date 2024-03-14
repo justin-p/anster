@@ -36,10 +36,6 @@
   vars:
     firewall_services:
       - name: ssh
-      - name: http
-      - name: https
-      - name: 8080
-        protocol: tcp
   when: hostvars[inventory_hostname]['cloudprovider'] != "oci"
 
 - name: Reboot to apply role changes
