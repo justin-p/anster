@@ -62,6 +62,24 @@ resource "oci_core_default_route_table" "main" {
   manage_default_resource_id = oci_core_vcn.main[0].default_route_table_id
 }
 
+resource "oci_core_default_security_list" "default_security_list" {
+  count = var.module_enabled ? 1 : 0 # only run if this variable is true
+
+  compartment_id             = var.oci_compartment_id
+  manage_default_resource_id = oci_core_vcn.main[0].default_security_list_id
+
+  display_name = "Default security list"
+  egress_security_rules {
+    destination = "0.0.0.0/0"
+    protocol    = "all"
+  }
+
+  ingress_security_rules {
+    source = "0.0.0.0/0"
+    protocol    = "all"
+  }
+}
+
 resource "oci_core_instance" "main" {
   count = var.module_enabled ? 1 : 0 # only run if this variable is true
   agent_config {

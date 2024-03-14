@@ -21,12 +21,26 @@
   vars:
     update_reboot: false # Using a custom reboot with `post_reboot_delay` seems to help avoid hetzner reboot issues (stuck waiting for reboot).
 
-- name: Run 'robertdebock.firewall'-role
+- name: Run 'geerlingguy.firewall'-role # On OCI we need to use IPTables. See https://stackoverflow.com/questions/54794217/opening-port-80-on-oracle-cloud-infrastructure-compute-node
+  ansible.builtin.include_role:
+    name: geerlingguy.firewall
+  vars:
+    firewall_flush_rules_and_chains: false
+    firewall_allowed_tcp_ports:
+      - 22
+  when: hostvars[inventory_hostname]['cloudprovider'] == "oci"
+
+- name: Run 'robertdebock.firewall'-role # Since we are not running on OCI we can use good 'ol UFW.
   ansible.builtin.include_role:
     name: robertdebock.firewall
   vars:
     firewall_services:
       - name: ssh
+      - name: http
+      - name: https
+      - name: 8080
+        protocol: tcp
+  when: hostvars[inventory_hostname]['cloudprovider'] != "oci"
 
 - name: Reboot to apply role changes
   ansible.builtin.reboot:
