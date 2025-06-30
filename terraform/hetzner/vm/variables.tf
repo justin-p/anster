@@ -20,11 +20,11 @@ variable "server_labels" {
 }
 
 variable "server_image" {
-  default = "ubuntu-20.04"
+  default = "ubuntu-24.04"
 }
 
 variable "server_server_type" {
-  default = "cx11"
+  default = "cpx11"
 }
 
 variable "server_location" {
