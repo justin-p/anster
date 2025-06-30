@@ -12,9 +12,9 @@ variable "hetzner_servers" {
   description = "A map contaning server(s) that should be created."
   type = map(object({
     hostname    = optional(string)
-    server_type = optional(string, "cx11")
+    server_type = optional(string, "cpx11")
     labels      = map(string)
-    image       = optional(string, "ubuntu-20.04")
+    image       = optional(string, "ubuntu-24.04")
     location    = optional(string, "nbg1")
     backups     = optional(bool, false)
     ptr         = optional(string)
